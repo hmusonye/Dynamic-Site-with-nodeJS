@@ -1,14 +1,15 @@
-const Profile = require("./profile.js");
-
+const Profile = require('./profile.js');
+const renderer = require('./renderer.js')
 //Handle HTTP route GET / and POST / i.e. Home
 function home(request, response) {
   //if url == "/" && GET
   if(request.url === "/"){
     //show search
     response.writeHead(200, {'Content-Type': 'text/plain'});
-    response.write(`Header gg \n`);
-    response.write(`Search \n`);
-    response.end(`Footer \n`);
+    renderer.view('header', {}, response);
+    renderer.view('Search', {}, response);
+    renderer.view('footer', {}, response);
+    response.end();
   }
     //if url == "/" && POST
     //redirect to /:username
@@ -20,7 +21,7 @@ function home(request, response) {
     let username = request.url.replace("/", "");
     if(username.length > 0){
       response.writeHead(200, {'Content-Type': 'text/plain'});
-      response.write(`Header Yolo \n`);
+      renderer.view('header', {}, response);
 
       //get json from Treehouseconst
       let studentProfile = new Profile(username);
@@ -38,17 +39,21 @@ function home(request, response) {
         };
 
         //simple response
-        response.write(`${values.username} has ${values.badges} badges`);
+        renderer.view('profile', values, response);
+        renderer.view('footer', {}, response);
+        response.end();
       });
 
       //on "error"
       studentProfile.on('error', (error) => {
         //show error
-        response.write(`${error.message} \n`);
+        renderer.view('error', {errorMessage: error.message}, response);
+        renderer.view('Search', {}, response);
+        renderer.view('footer', {}, response);
+        response.end();
       });
     }
-    return response;
-  }
+}
 
 module.exports.home = home;
 module.exports.user = user;
