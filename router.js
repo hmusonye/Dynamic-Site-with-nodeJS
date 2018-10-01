@@ -1,6 +1,6 @@
 const Profile = require('./profile.js');
 const renderer = require('./renderer.js');
-const headers = {'Content-Type': 'text/html'}
+const headers = {'Content-Type': 'text/html'};
 
 //Handle HTTP route GET / and POST / i.e. Home
 function home(request, response) {
@@ -9,7 +9,7 @@ function home(request, response) {
     //show search
     response.writeHead(200, headers);
     renderer.view('header', {}, response);
-    renderer.view('Search', {}, response);
+    renderer.view('search', {}, response);
     renderer.view('footer', {}, response);
     response.end();
   }
@@ -21,7 +21,7 @@ function home(request, response) {
   function user(request, response) {
     //if url == "/...."
     let username = request.url.replace("/", "");
-    console.log('user:',username);
+    
     if(username.length > 0){
       response.writeHead(200, headers);
       renderer.view('header', {}, response);
@@ -50,7 +50,7 @@ function home(request, response) {
       studentProfile.on('error', (error) => {
         //show error
         renderer.view('error', {errorMessage: error.message}, response);
-        renderer.view('Search', {}, response);
+        renderer.view('search', {}, response);
         renderer.view('footer', {}, response);
         response.end();
       });
